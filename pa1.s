@@ -5,7 +5,9 @@ input_spec      :   .asciz  "%s[^\n]"
 length_spec     :   .asciz  "String length: %d\n"
 palindrome_spec :   .asciz  "String is a palindrome (T/F): %c\n"
 input_format	:   .asciz  "%s"
-input           :   .space   8
+input           :   .space  8
+truth           :   .asciz  "T"
+falsification   :   .asciz  "F"
 
 .section .text
 
@@ -60,7 +62,7 @@ main:
 
         #put s[i] (s[] + i) address into x12
         ADD x12, x9, x11
-        # load the character in s[i] to x12
+        # load the character in s[i] to x13
         LDRB w13, [x12,#0]
 
 
@@ -72,22 +74,23 @@ main:
         ADD x12, x12, x9
         # put s[length - 1 - i] character in x14
         LDRB w14, [x12,#0]
-
-
-
-        ldr x0, =palindrome_spec
-        mov x1, x14
-        BL printf
-        
-
-        
-        
+        # compare char in first half of string to its counterpart in 2nd half
+        SUB x15, x13, x14
+        CBNZ x15, False
 
 
     True:
+        ldr x0, =palindrome_spec
+        MOV x1, #84
+        BL printf
+        b exit
     False:
+        ldr x0, =palindrome_spec
+        MOV x1, #70
+        BL printf
+        b exit
 
-	b exit
+	#b exit
 
 # add code and other labels here
 

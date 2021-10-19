@@ -28,9 +28,10 @@ main:
     #initialize size to zero and store in x19 (i = 0)
     ADD x19, XZR, XZR
 
-    #begin of loop
-    L1: #add i to s[]
+    # while loop to get string length
+    L1: # add i to s[]
         ADD x11, x9, x19
+
         #load the character in y[i] to x12
         ldrb w12, [x11,#0]
 
@@ -39,12 +40,20 @@ main:
 
         #if s[i] != 0 then go to L1
         CBNZ w12, L1
-    #prints out the length
+    #prints out the length which is stored in x19
     ldr X0, =length_spec
     SUB X19, X19, #1
     MOV X1, x19
     BL printf
+
+    #puts 1/2 the length of s into x10
+    LSR X10, X19, #1
+
     
+    #for loop to check for palindrome
+    L2: # for i (x9) = 0
+        ADD x9, XZR, XZR
+        # i < 1/2 length of s
 
 	b exit
 

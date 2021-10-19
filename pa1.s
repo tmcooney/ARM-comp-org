@@ -46,14 +46,46 @@ main:
     MOV X1, x19
     BL printf
 
+    # put input string s address in x9
+    LDR x9, =input
     #puts 1/2 the length of s into x10
     LSR X10, X19, #1
 
-    
     #for loop to check for palindrome
-    L2: # for i (x9) = 0
-        ADD x9, XZR, XZR
-        # i < 1/2 length of s
+    L2: # for i (x11) = 0
+        ADD x11, XZR, XZR
+        # i (x11) < 1/2 length of s (x10). if this is false it must be palindrome
+        SUBS XZR, X11, X10
+        B.GE True
+
+        #put s[i] (s[] + i) address into x12
+        ADD x12, x9, x11
+        # load the character in s[i] to x12
+        LDRB w13, [x12,#0]
+
+
+        # put address for s length - 1 in x12
+        SUB x12, x19, #1
+        # put address for s length - 1 - i in x12
+        SUB x12, x12, x11
+        # s[] plus [length - 1 - i]
+        ADD x12, x12, x9
+        # put s[length - 1 - i] character in x14
+        LDRB w14, [x12,#0]
+
+
+
+        ldr x0, =palindrome_spec
+        mov x1, x14
+        BL printf
+        
+
+        
+        
+
+
+    True:
+    False:
 
 	b exit
 

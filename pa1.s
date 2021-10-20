@@ -53,18 +53,18 @@ main:
     #puts 1/2 the length of s into x10
     LSR X10, X19, #1
 
+    # for i (x11) = 0
+    ADD x11, XZR, XZR
     #for loop to check for palindrome
-    L2: # for i (x11) = 0
-        ADD x11, XZR, XZR
+    L2:
         # i (x11) < 1/2 length of s (x10). if this is false it must be palindrome
-        SUBS XZR, X11, X10
-        B.GE True
+        #SUBS XZR, X11, X10
+        #B.GT True
 
         #put s[i] (s[] + i) address into x12
         ADD x12, x9, x11
         # load the character in s[i] to x13
         LDRB w13, [x12,#0]
-
 
         # put address for s length - 1 in x12
         SUB x12, x19, #1
@@ -78,6 +78,12 @@ main:
         SUB x15, x13, x14
         CBNZ x15, False
 
+        SUB x15, x11, x10
+        CBZ x15, True
+
+        add x11, x11, #1
+        b L2
+        
 
     True:
         ldr x0, =palindrome_spec

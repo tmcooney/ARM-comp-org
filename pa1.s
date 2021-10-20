@@ -1,13 +1,10 @@
 .section .data
 
 input_prompt    :   .asciz  "Input a string: "
-input_spec      :   .asciz  "%s[^\n]"
+input_spec      :   .asciz  "%[^\n]"
 length_spec     :   .asciz  "String length: %d\n"
 palindrome_spec :   .asciz  "String is a palindrome (T/F): %c\n"
-input_format	:   .asciz  "%s"
 input           :   .space  8
-truth           :   .asciz  "T"
-falsification   :   .asciz  "F"
 
 .section .text
 
@@ -81,6 +78,7 @@ main:
         SUB x15, x11, x10
         CBZ x15, True
 
+        # i = i + 1
         add x11, x11, #1
         b L2
         
@@ -97,8 +95,6 @@ main:
         b exit
 
 	#b exit
-
-# add code and other labels here
 
 # branch to this label on program completion
 exit:

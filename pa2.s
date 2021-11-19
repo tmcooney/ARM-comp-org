@@ -23,6 +23,23 @@ main:
     mov x1, sp
     bl scanf
 
+    # store x in X19
+    ldrsw X19, [sp]
+
+    #prompt user for y
+    ldr x0, =input_y_prompt
+    bl printf
+
+    # set the stack pointer to hold y
+    sub sp, sp, 8
+    # get y from user input
+    ldr x0, =input_spec
+    mov x1, sp
+    bl scanf
+
+    # store y in x20
+    ldrsw x20, [sp]
+
     b exit
 
 # branch to this label on program completion

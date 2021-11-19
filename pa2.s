@@ -11,7 +11,19 @@ result		:	.asciz	"x^y = %d\n"
 
 main:
 
-# add code and other labels here
+    #prompt user for x
+    ldr x0, =input_x_prompt
+    bl printf
+    
+
+    #set up stack pointer to hold x
+    sub sp, sp, 8
+    #get x from user input
+    ldr x0, =input_spec
+    mov x1, sp
+    bl scanf
+
+    b exit
 
 # branch to this label on program completion
 exit:

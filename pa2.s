@@ -39,16 +39,22 @@ main:
 
     # store y in x20
     ldrsw x20, [sp]
-
+    
 
     bl power
     
+    ldr x0, =result
+    mov x1, x2
+    bl printf
+
+    add sp, sp, #16
 
     b exit
+
 # power function
 power:
     
-    #if x is not zero
+    #checks conditions then recurses if appropriate
     cbnz x0, elseIf
 
     # if y == 0 return 1
@@ -57,6 +63,7 @@ power:
     # if y is less than zero
     subs xzr, x1, xzr
     b.lt yIsNegative
+
     # base case: if x==0 return zero
     cbz x0, xIsZero
     ret
@@ -64,21 +71,19 @@ power:
 #else if y < 0
 elseIf:
     subs xzr, x1, xzr
-    b.ge elseIfIf
-# else if y is not 0
-elseIfIf:
-    cbnz x1, exponent_recurse
-    
+    b.gt exponent_recurse
     
 # if y < 0
 yIsNegative:
     add x2, xzr, xzr
     add x2, x2, #1
     ret
+
 #if y==0
 yIsZero:
     mov x2, x1
     ret
+
 #if x==0
 xIsZero:
     mov x2, x0
@@ -87,7 +92,29 @@ xIsZero:
 
 # recursion function
 exponent_recurse:
-    #do stuff and things here
+    #set up the stack for the return register.
+    sub sp, sp, 8
+    str x30, [sp]
+
+    #set up the stack to store x0 and x1 (add args)
+    sub sp, sp, 8
+    str x0, [sp]
+    sub sp, sp, 8
+    str x1, [sp]
+
+    #recursively call the add function with arguments x and y-1
+    sub x1, x1, #1
+    bl power
+
+    #return from recursive call adn restore stack
+    ldr x1, [sp]
+    ldr x0, [sp, 8]
+    ldr x30, [sp, 16]
+    add sp, sp, 24
+
+    # value to be returned is x * power(x, y - 1)
+    mul x2, x2, x0
+    ret
 
 # branch to this label on program completion
 exit:

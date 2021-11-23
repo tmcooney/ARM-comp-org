@@ -14,7 +14,6 @@ main:
     #prompt user for x
     ldr x0, =input_x_prompt
     bl printf
-    
 
     #set up stack pointer to hold x
     sub sp, sp, 8
@@ -37,9 +36,12 @@ main:
     mov x1, sp
     bl scanf
 
+
     # store y in x20
     ldrsw x20, [sp]
     
+    mov x0, x19
+    mov x1, x20
 
     bl power
     
@@ -59,29 +61,31 @@ power:
 
     # if y == 0 return 1
     cbz x1, yIsZero
+    ret
 
     # if y is less than zero
     subs xzr, x1, xzr
     b.lt yIsNegative
+    ret
 
     # base case: if x==0 return zero
     cbz x0, xIsZero
-    ret
-
-#else if y < 0
+    br x30
+#else if y > 0
 elseIf:
-    subs xzr, x1, xzr
+    subs x9, x1, xzr
     b.gt exponent_recurse
+    ret
     
 # if y < 0
 yIsNegative:
     add x2, xzr, xzr
-    add x2, x2, #1
     ret
 
 #if y==0
 yIsZero:
-    mov x2, x1
+    add x2, xzr, xzr
+    add x2, x2, #1
     ret
 
 #if x==0
@@ -114,7 +118,7 @@ exponent_recurse:
 
     # value to be returned is x * power(x, y - 1)
     mul x2, x2, x0
-    ret
+    br x30
 
 # branch to this label on program completion
 exit:
